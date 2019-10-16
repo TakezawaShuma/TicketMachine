@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\ChangeManager.cs" />
+    <Compile Include="Assets\Script\ElectronicCardData.cs" />
     <Compile Include="Assets\Script\MoneyManager.cs" />
     <Compile Include="Assets\Script\MouseMove.cs" />
     <Compile Include="Assets\Script\PurchaseStepManager.cs" />

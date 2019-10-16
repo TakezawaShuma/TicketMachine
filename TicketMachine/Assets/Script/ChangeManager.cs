@@ -99,8 +99,9 @@ public class ChangeManager : MonoBehaviour
     public void DisplayChange(int _charge, int _amount)
     {
         change = CashCalculate(_charge, _amount);
+        gameObject.SetActive(true);
         MakeChange(change);
-
+        Debug.Log("おつり表示");
         tenYenText.text = "x" + tenYen.ToString();
         fiftyYenText.text = "x" + fiftyYen.ToString();
         hundredYenText.text = "x" + hundredYen.ToString();
@@ -108,7 +109,6 @@ public class ChangeManager : MonoBehaviour
         thousandYenText.text = "x" + thousandYen.ToString();
         fiveThousandYenText.text = "x" + fiveThousandYen.ToString();
         tenThousandYenText.text = "x" + tenThousandYen.ToString();
-        gameObject.SetActive(true);
     }
     
 
