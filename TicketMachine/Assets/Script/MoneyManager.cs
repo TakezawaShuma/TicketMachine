@@ -24,7 +24,7 @@ public class MoneyManager : MonoBehaviour
     [SerializeField]
     int maxFiveThousandYen = 0; // 五千円の最大数
     [SerializeField]
-    int maxTenThousandYen = 0;  // 1万円の最大数
+    int maxTenThousandYen = 0;  // 一万円の最大数
     [SerializeField]
     int electronicMoney1 = 0;
     [SerializeField]
@@ -36,9 +36,26 @@ public class MoneyManager : MonoBehaviour
     int nowHundredYen = 0;      // 百円の残り数
     int nowFiveHundredYen = 0;  // 五百円の残り数
     int nowThousandYen = 0;     // 千円の残り数
-   int nowFiveThousandYen = 0;  // 五千円の残り数
-    int nowTenThousandYen = 0;  // 1万円の残り数
- 
+    int nowFiveThousandYen = 0; // 五千円の残り数
+    int nowTenThousandYen = 0;  // 一万円の残り数
+
+    int electronicBalance = 0;
+
+
+    [SerializeField]
+    Text textTenYen = default(Text);            // 十円の残り数テキスト
+    [SerializeField]
+    Text textFiftyYen = default(Text);          // 五十円の残り数テキスト
+    [SerializeField]
+    Text textHundredYen = default(Text);        // 百円の残り数テキスト
+    [SerializeField]
+    Text textFiveHundredYen = default(Text);    // 五百円の残り数テキスト
+    [SerializeField]
+    Text textThousandYen = default(Text);       // 千円の残り数テキスト
+    [SerializeField]
+    Text textFiveThousandYen = default(Text);   // 五千円の残り数テキスト
+    [SerializeField]
+    Text textTenThousandYen = default(Text);    // 一万円の残り数テキスト
 
 
     // Start is called before the first frame update
@@ -53,12 +70,26 @@ public class MoneyManager : MonoBehaviour
         nowThousandYen = maxThousandYen;
         nowFiveThousandYen = maxFiveThousandYen;
         nowTenThousandYen = maxTenThousandYen;
-
+        textTenYen.text = maxTenYen.ToString();
+        textFiftyYen.text = maxFiftyYen.ToString();
+        textHundredYen.text = maxHundredYen.ToString();
+        textFiveHundredYen.text = maxFiveHundredYen.ToString();
+        textThousandYen.text = maxThousandYen.ToString();
+        textFiveThousandYen.text = maxFiveThousandYen.ToString();
+        textTenThousandYen.text = maxTenThousandYen.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        textTenYen.text = nowTenYen.ToString();
+        textFiftyYen.text = nowFiftyYen.ToString();
+        textHundredYen.text = nowHundredYen.ToString();
+        textFiveHundredYen.text = nowFiveHundredYen.ToString();
+        textThousandYen.text = nowThousandYen.ToString();
+        textFiveThousandYen.text = nowFiveThousandYen.ToString();
+        textTenThousandYen.text = nowTenThousandYen.ToString();
     }
 
 
@@ -145,7 +176,7 @@ public class MoneyManager : MonoBehaviour
     }
     public void CreateFiveThousandBill()
     {
-        if (nowFiveThousandYen >0)
+        if (nowFiveThousandYen > 0)
         {
             var coin = (GameObject)Resources.Load("BillImagePrefab");
             var tmp = Instantiate(coin);
@@ -176,7 +207,36 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
+    public void CreateElectronicMoney1()
+    {
+        var coin = (GameObject)Resources.Load("CardImagePrefab");
+        var tmp = Instantiate(coin);
+        tmp.transform.SetParent(canvas.transform, false);
+        tmp.GetComponent<Image>().rectTransform.position = Input.mousePosition;
+        tmp.GetComponentInChildren<Text>().text = "カード1";
+        tmp.gameObject.AddComponent<MouseMove>();
+        tmp.gameObject.AddComponent<ElectronicCardData>();
+        tmp.GetComponent<ElectronicCardData>().balance = electronicMoney1;
+        tmp.name = "card";
+        haveNow = tmp;
 
+    }
+
+    public void CreateElectronicMoney2()
+    {
+
+        var coin = (GameObject)Resources.Load("CardImagePrefab");
+        var tmp = Instantiate(coin);
+        tmp.transform.SetParent(canvas.transform, false);
+        tmp.GetComponent<Image>().rectTransform.position = Input.mousePosition;
+        tmp.GetComponentInChildren<Text>().text = "カード2";
+        tmp.gameObject.AddComponent<MouseMove>();
+        tmp.gameObject.AddComponent<ElectronicCardData>();
+        tmp.GetComponent<ElectronicCardData>().balance = electronicMoney2;
+        tmp.name = "card";
+        haveNow = tmp;
+
+    }
 
     /// <summary>
     /// 今使った金種の量を取得する
@@ -256,12 +316,18 @@ public class MoneyManager : MonoBehaviour
     /// <param name="_minus">true = 使ってない</param>
     public void DestroyMoney(bool _minus)
     {
-        if(haveNow!=null)
+        if (haveNow != null)
         {
-            Debug.Log(haveNow.name);
-            int i = int.Parse(haveNow.GetComponentInChildren<Text>().text);
-            if (_minus) { MinusUseMoney(i); }
-            Destroy(haveNow);
+            if (haveNow.name != "card")
+            {
+                int i = int.Parse(haveNow.GetComponentInChildren<Text>().text);
+                if (_minus) { MinusUseMoney(i); }
+                Destroy(haveNow);
+            }
+            else
+            {
+                Destroy(haveNow);
+            }
         }
     }
 
@@ -269,6 +335,26 @@ public class MoneyManager : MonoBehaviour
     /// 今持っているお金の種類を取得する
     /// </summary>
     /// <returns></returns>
-    public int NowHaveCash { get {  return int.Parse(haveNow.GetComponentInChildren<Text>().text);} }
+    public int NowHaveCash { get { return int.Parse(haveNow.GetComponentInChildren<Text>().text); } }
+    public int NowHaveCard { get { return haveNow.GetComponent<ElectronicCardData>().balance;} }
 
+    public int SubBfromA(int _a,int _b)
+    {
+        int ret = 0;
+        ret = _a - _b;
+        return ret;
+    }
+
+    public int ElectronicBalance { get { return electronicBalance; } set { electronicBalance = value; } }
+
+    public void AllReset()
+    {
+        nowTenYen = maxTenYen;
+        nowFiftyYen = maxFiftyYen;
+        nowHundredYen = maxHundredYen;
+        nowFiveHundredYen = maxFiveHundredYen;
+        nowThousandYen = maxThousandYen;
+        nowFiveThousandYen = maxFiveThousandYen;
+        nowTenThousandYen = maxTenThousandYen;
+    }
 }
